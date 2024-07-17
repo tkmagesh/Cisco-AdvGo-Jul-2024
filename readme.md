@@ -77,3 +77,36 @@ go run --race [filename.go]
 ```
 ```
 go build --race [filename.go]
+```
+
+### Channels
+#### Declaration
+```go
+var [var_name] chan [data_type]
+// ex:
+var ch chan int
+```
+#### Instantiation
+```go
+[var_name] = make(chan [data_type])
+// ex:
+ch = make(chan int)
+```
+#### Combine Declaration & Intantiation
+```go
+ch := make(chan int)
+```
+#### Channel Operations
+- using the channel operator ( <- )
+##### Send Operation
+```go
+[channel_var_name] <- [data]
+// ex:
+ch <- 100
+```
+##### Receive Operation
+```go
+<-[channel_var_name]
+// ex:
+data := <-ch
+```

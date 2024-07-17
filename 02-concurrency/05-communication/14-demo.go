@@ -8,18 +8,17 @@ import (
 	"sync"
 )
 
-// communicate by sharing memory
-var result int
-
 func main() {
+	// communicate by sharing memory
+	var result int
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
-	go add(wg, 100, 200)
+	go add(wg, 100, 200, &result)
 	wg.Wait()
 	fmt.Println("Add Result :", result)
 }
 
-func add(wg *sync.WaitGroup, x, y int) {
+func add(wg *sync.WaitGroup, x, y int, result *int) {
 	defer wg.Done()
-	result = x + y
+	*result = x + y
 }
