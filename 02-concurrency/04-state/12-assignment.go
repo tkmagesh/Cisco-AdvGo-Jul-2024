@@ -14,6 +14,7 @@ func main() {
 			primes = append(primes, no)
 		}
 	}
+	fmt.Println("primes count :", len(primes))
 	fmt.Println(primes)
 }
 func isPrime(no int) bool {
