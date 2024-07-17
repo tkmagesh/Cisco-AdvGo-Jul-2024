@@ -29,6 +29,7 @@ func main() {
 		if err == ErrDivideByZero {
 			fmt.Println("divisor cannot be 0, try again!")
 			continue
+			// break
 		}
 		if err != nil {
 			fmt.Println("unknown error occurred, err =", err)

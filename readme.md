@@ -46,3 +46,27 @@
 - Pass functions as arguments
 - Return a function as a return value
 
+## Concurrency
+- Ability to have more than one execution path
+- Typically achieved using OS Threads
+    - OS Threads are costly
+        - ~2 MB of Memory (in linux)
+        - Mitigate the cost of creating/destroying threads using thread pools
+![image](./images/thread-based-concurrency.png)
+
+### Go Concurrency
+- Concurrent operations are represented as "goroutines"
+- goroutines are cheap (~4KB)
+- Builtin scheduler
+    - Go scheduler schedules the goroutine executions through the OS threads
+- Concurrency support is built in the language itself
+    - go keyword, channel data type, channel operator ( <- ), for-range, select-case
+    - APIs support
+        - "sync" package
+        - "sync/atomic" package
+
+![image](./images/go-concurrency.png)
+
+### WaitGroup ("sync" package)
+- semaphore based counter
+- has the capability to block the execution of the current function until the counter becomes 0
