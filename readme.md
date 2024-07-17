@@ -13,6 +13,7 @@
 ## Methodology
 - No powerpoint presentation
 - Discuss & Code
+- No dedicated time for Q&A
 
 ## Repository
 - https://github.com/tkmagesh/cisco-advgo-jul-2024
@@ -26,5 +27,22 @@
 - Struct Composition
 - Interfaces
 - Modules & Packages
-- Concurrency
+- Concurrency (Optional)
+
+## Software Requirements
+- Go tools
+- Any editor (Visual Studio Code)
+- Docker Desktop (Optional)
+
+## Review
+- Higher Order Functions
+- Interfaces
+- Struct Composition
+- Deferred Functions
+- Panic & Recovery
+
+### Higher Order Functions
+- Assign functions to variables
+- Pass functions as arguments
+- Return a function as a return value
 
