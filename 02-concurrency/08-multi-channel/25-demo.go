@@ -4,7 +4,6 @@ package main
 
 import (
 	"fmt"
-	"sync"
 	"time"
 )
 
@@ -13,26 +12,23 @@ func main() {
 	ch2 := make(chan int)
 
 	go func() {
-		time.Sleep(5 * time.Second)
+		time.Sleep(2 * time.Second)
 		ch1 <- 100
 	}()
 
 	go func() {
-		time.Sleep(2 * time.Second)
+		time.Sleep(5 * time.Second)
 		ch2 <- 200
 	}()
 
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		fmt.Println(<-ch1)
-	}()
-
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		fmt.Println(<-ch2)
-	}()
-	wg.Wait()
+	for range 2 {
+		select {
+		case d1 := <-ch1:
+			fmt.Println(d1)
+		case d2 := <-ch2:
+			fmt.Println(d2)
+			/* default:
+			fmt.Println("No channel operation is successful") */
+		}
+	}
 }
