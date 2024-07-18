@@ -35,7 +35,6 @@ func timeout(d time.Duration) <-chan time.Time {
 
 func genPrimes(start int, stopCh <-chan time.Time) <-chan int {
 	ch := make(chan int)
-	stopCh <- time.Now()
 	go func() {
 	LOOP:
 		for no := start; ; no++ {
