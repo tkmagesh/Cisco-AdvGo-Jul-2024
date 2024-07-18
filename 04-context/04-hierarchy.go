@@ -44,6 +44,7 @@ LOOP:
 		select {
 		case <-ctx.Done():
 			fmt.Println("[printNos] cancellation signal received!")
+			fmt.Println("[printNos] cancellation error :", ctx.Err())
 			break LOOP
 		default:
 			time.Sleep(100 * time.Millisecond)
@@ -62,6 +63,12 @@ LOOP:
 		select {
 		case <-ctx.Done():
 			fmt.Println("[printEvenNos] cancellation signal received!")
+			if ctx.Err() == context.DeadlineExceeded {
+				fmt.Println("[printEvenNos] cancelled due to timeout")
+			}
+			if ctx.Err() == context.Canceled {
+				fmt.Println("[printEvenNos] cancelled")
+			}
 			break LOOP
 		default:
 			if i%2 == 0 {
@@ -82,6 +89,12 @@ LOOP:
 		select {
 		case <-ctx.Done():
 			fmt.Println("[printOddNos] cancellation signal received!")
+			if ctx.Err() == context.DeadlineExceeded {
+				fmt.Println("[printOddNos] cancelled due to timeout")
+			}
+			if ctx.Err() == context.Canceled {
+				fmt.Println("[printOddNos] cancelled")
+			}
 			break LOOP
 		default:
 			if i%2 != 0 {
