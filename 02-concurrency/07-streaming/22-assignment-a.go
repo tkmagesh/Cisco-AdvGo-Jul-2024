@@ -5,14 +5,20 @@ print the generated prime numbers in the main function (consumer) as and when th
 
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func main() {
+	start := time.Now()
 	ch := genPrimes(1000, 2000)
 	for primeNo := range ch {
 		fmt.Println("primeNo :", primeNo)
 	}
 	fmt.Println("Done!")
+	elapsed := time.Since(start)
+	fmt.Println("time taken :", elapsed)
 }
 
 func genPrimes(start, end int) chan int {
