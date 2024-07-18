@@ -115,3 +115,17 @@ data := <-ch
 - "Receive" operation is ALWAYS a blocking operation
 - A "Send" operation is blocked until a "Receive" operation a initiated (conditional)
 ![image](./images/channel-bahivors.png)
+### Context
+- API for "cancellation" propagation
+- context.Background() (used to create the top-most context and this is non-cancellable)
+- Context creation apis
+    - context.WithCancel()
+        - programmatic cancellation
+    - context.WithTimeout()
+        - Will automatically do cancellation based on the elapsed time
+        - Wrapper for context.WithDeadline()
+    - context.WithDeadline()
+        - Will automatically do cancellation based on the absolute date & time
+    - context.WithValue()
+        - Used to share data through context hierarchy
+        - Does not offer cancellation functionality
