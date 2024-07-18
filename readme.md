@@ -92,7 +92,7 @@ var ch chan int
 // ex:
 ch = make(chan int)
 ```
-#### Combine Declaration & Intantiation
+#### Combine Declaration & Instantiation
 ```go
 ch := make(chan int)
 ```
@@ -110,3 +110,8 @@ ch <- 100
 // ex:
 data := <-ch
 ```
+
+##### Channel Behavior
+- "Receive" operation is ALWAYS a blocking operation
+- A "Send" operation is blocked until a "Receive" operation a initiated (conditional)
+![image](./images/channel-bahivors.png)
