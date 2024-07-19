@@ -175,3 +175,8 @@ data := <-ch
     2. Go plugins (installed in the GOPATH/bin folder)
         go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
         go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
+
+## Testing
+- gotest - https://github.com/rakyll/gotest
+- mockery - https://vektra.github.io/mockery/latest/
+- testify - https://github.com/stretchr/testify
