@@ -33,6 +33,20 @@ message AggregateResponse {
     int64 max = 3;
 }
 
+// bidirectional streaming
+message PersonName {
+    string firstName=1;
+    string lastName=2;
+}
+
+message GreetRequest {
+    PersonName person = 1;
+}
+
+message GreetResponse {
+    string message = 1;
+}
+
 // Service Contract
 service AppService {
     // Operation Contracts
@@ -45,5 +59,8 @@ service AppService {
 
     // Client Streaming
     rpc Aggregate (stream AggregateRequest) returns (AggregateResponse);
+
+    // Bidirectional streaming
+    rpc Greet (stream GreetRequest) returns (stream GreetResponse);
 }
 
