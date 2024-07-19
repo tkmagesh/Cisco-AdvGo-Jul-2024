@@ -134,3 +134,44 @@ data := <-ch
 - Both http client & server apis
 ### Routing Libraries
 ### Web Frameworks
+
+## GRPC
+- Alternative to HTTP based restful services
+- Optimal for micro-services communication
+- Communication Patterns
+    - Request & Response
+    - Server Streaming (one request & stream of responses)
+    - Client Streaming (stream of requests & one response)
+    - Bidirectional Streaming (stream of requests & stream of responses)
+- Use HTTP2
+- Uses Protocol Buffers for serializing payloads
+    - [Protocol Buffers Reference](https://protobuf.dev/)
+    - Share the schema among the consumers and producers in advance
+- Multi-language supports
+    - Go
+    - Java
+    - .NET
+    - Node.js
+    - Python
+### Steps
+- Create "Service / Operation / Data" contracts using protocol buffers
+- Share the schema between the server & client
+- Generate the proxy & stub using the schema
+    client -> proxy -> stub -> service
+- Implement & Host the server
+- Use the proxy to communicate to the server
+
+### Tools Installation 
+    1. Protocol Buffers Compiler (protoc tool)
+        Windows:
+            Download the file, extract and keep in a folder (PATH) accessble through the command line
+            https://github.com/protocolbuffers/protobuf/releases/download/v24.4/protoc-24.4-win64.zip
+        Mac:
+            brew install protobuf
+
+        Verification:
+            protoc --version
+
+    2. Go plugins (installed in the GOPATH/bin folder)
+        go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
+        go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
