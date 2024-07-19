@@ -14,11 +14,23 @@ message AddResponse{
     int64 sum = 1;
 }
 
+message PrimeRequest {
+    int64 start = 1;
+    int64 end = 2;
+}
+
+message PrimeResponse{
+    int64 primeNo = 1;
+}
+
 // Service Contract
 service AppService {
     // Operation Contracts
 
     // Request & Response
     rpc Add (AddRequest) returns (AddResponse);
+
+    // Server Streaming
+    rpc GeneratePrimes (PrimeRequest) returns (stream PrimeResponse);
 }
 

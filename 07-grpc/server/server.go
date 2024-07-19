@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 
@@ -27,6 +28,34 @@ func (asi *AppServiceImpl) Add(ctx context.Context, req *proto.AddRequest) (*pro
 		Sum: result,
 	}
 	return resp, nil
+}
+
+func (asi *AppServiceImpl) GeneratePrimes(req *proto.PrimeRequest, serverStream proto.AppService_GeneratePrimesServer) error {
+	start := req.GetStart()
+	end := req.GetEnd()
+	log.Printf("[AppService - GeneratePrimes] start = %d and end = %d\n", start, end)
+	for no := start; no <= end; no++ {
+		if isPrime(no) {
+			log.Printf("[AppService - GeneratePrimes] sending prime no : %d\n", no)
+			res := &proto.PrimeResponse{
+				PrimeNo: no,
+			}
+			if err := serverStream.Send(res); err != nil {
+				log.Fatalln(err)
+			}
+		}
+	}
+	fmt.Println("[AppService - GeneratePrimes] Done!")
+	return nil // io.EOF will be returned
+}
+
+func isPrime(no int64) bool {
+	for i := int64(2); i <= (no / 2); i++ {
+		if no%i == 0 {
+			return false
+		}
+	}
+	return true
 }
 
 func main() {
