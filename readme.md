@@ -180,3 +180,21 @@ data := <-ch
 - gotest - https://github.com/rakyll/gotest
 - mockery - https://vektra.github.io/mockery/latest/
 - testify - https://github.com/stretchr/testify
+
+### Run Tests
+- go test ./... -v
+
+## Profiling
+go test -run=^$ -bench=. ./...  -cpu=1,2,4,8 -benchmem
+### CPU profiling
+go test -run=^$ -bench=. ./... -cpuprofile=cpu.prof  -cpu=1,2,4,8 -benchmem
+### Memory profiling
+go test -run=^$ -bench=. ./... -memprofile=mem.prof  -cpu=1,2,4,8 -benchmem
+
+### Analysing profile data
+go tool pprof <profile_file>
+
+#### pprof commands
+- top10
+- list <function_name>
+- web
