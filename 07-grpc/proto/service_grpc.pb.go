@@ -26,6 +26,8 @@ type AppServiceClient interface {
 	Add(ctx context.Context, in *AddRequest, opts ...grpc.CallOption) (*AddResponse, error)
 	// Server Streaming
 	GeneratePrimes(ctx context.Context, in *PrimeRequest, opts ...grpc.CallOption) (AppService_GeneratePrimesClient, error)
+	// Client Streaming
+	Aggregate(ctx context.Context, opts ...grpc.CallOption) (AppService_AggregateClient, error)
 }
 
 type appServiceClient struct {
@@ -77,6 +79,40 @@ func (x *appServiceGeneratePrimesClient) Recv() (*PrimeResponse, error) {
 	return m, nil
 }
 
+func (c *appServiceClient) Aggregate(ctx context.Context, opts ...grpc.CallOption) (AppService_AggregateClient, error) {
+	stream, err := c.cc.NewStream(ctx, &AppService_ServiceDesc.Streams[1], "/proto.AppService/Aggregate", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &appServiceAggregateClient{stream}
+	return x, nil
+}
+
+type AppService_AggregateClient interface {
+	Send(*AggregateRequest) error
+	CloseAndRecv() (*AggregateResponse, error)
+	grpc.ClientStream
+}
+
+type appServiceAggregateClient struct {
+	grpc.ClientStream
+}
+
+func (x *appServiceAggregateClient) Send(m *AggregateRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *appServiceAggregateClient) CloseAndRecv() (*AggregateResponse, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(AggregateResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // AppServiceServer is the server API for AppService service.
 // All implementations must embed UnimplementedAppServiceServer
 // for forward compatibility
@@ -85,6 +121,8 @@ type AppServiceServer interface {
 	Add(context.Context, *AddRequest) (*AddResponse, error)
 	// Server Streaming
 	GeneratePrimes(*PrimeRequest, AppService_GeneratePrimesServer) error
+	// Client Streaming
+	Aggregate(AppService_AggregateServer) error
 	mustEmbedUnimplementedAppServiceServer()
 }
 
@@ -97,6 +135,9 @@ func (UnimplementedAppServiceServer) Add(context.Context, *AddRequest) (*AddResp
 }
 func (UnimplementedAppServiceServer) GeneratePrimes(*PrimeRequest, AppService_GeneratePrimesServer) error {
 	return status.Errorf(codes.Unimplemented, "method GeneratePrimes not implemented")
+}
+func (UnimplementedAppServiceServer) Aggregate(AppService_AggregateServer) error {
+	return status.Errorf(codes.Unimplemented, "method Aggregate not implemented")
 }
 func (UnimplementedAppServiceServer) mustEmbedUnimplementedAppServiceServer() {}
 
@@ -150,6 +191,32 @@ func (x *appServiceGeneratePrimesServer) Send(m *PrimeResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _AppService_Aggregate_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(AppServiceServer).Aggregate(&appServiceAggregateServer{stream})
+}
+
+type AppService_AggregateServer interface {
+	SendAndClose(*AggregateResponse) error
+	Recv() (*AggregateRequest, error)
+	grpc.ServerStream
+}
+
+type appServiceAggregateServer struct {
+	grpc.ServerStream
+}
+
+func (x *appServiceAggregateServer) SendAndClose(m *AggregateResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *appServiceAggregateServer) Recv() (*AggregateRequest, error) {
+	m := new(AggregateRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // AppService_ServiceDesc is the grpc.ServiceDesc for AppService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -167,6 +234,11 @@ var AppService_ServiceDesc = grpc.ServiceDesc{
 			StreamName:    "GeneratePrimes",
 			Handler:       _AppService_GeneratePrimes_Handler,
 			ServerStreams: true,
+		},
+		{
+			StreamName:    "Aggregate",
+			Handler:       _AppService_Aggregate_Handler,
+			ClientStreams: true,
 		},
 	},
 	Metadata: "proto/service.proto",

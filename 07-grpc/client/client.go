@@ -57,6 +57,32 @@ func (clientApp *ClientApp) doServerStream(ctx context.Context) {
 		fmt.Printf("Prime No : %d\n", primeRes.GetPrimeNo())
 	}
 }
+func (clientApp *ClientApp) doClientStream(ctx context.Context) {
+	nos := []int64{3, 1, 4, 2, 5, 9, 6, 8, 7}
+	clientStream, err := clientApp.serviceClient.Aggregate(ctx)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	for _, no := range nos {
+		fmt.Println("Sending no :", no)
+		req := &proto.AggregateRequest{
+			No: no,
+		}
+		if err := clientStream.Send(req); err != nil {
+			log.Fatalln(err)
+		}
+		time.Sleep(300 * time.Millisecond)
+	}
+	fmt.Println("Client finished sending all the data")
+	if res, err := clientStream.CloseAndRecv(); err == io.EOF || err == nil {
+		fmt.Println("Sum :", res.GetSum())
+		fmt.Println("Min :", res.GetMin())
+		fmt.Println("Max :", res.GetMax())
+	} else {
+		log.Fatalln(err)
+	}
+
+}
 func main() {
 	options := grpc.WithTransportCredentials(insecure.NewCredentials())
 	clientConn, err := grpc.NewClient("localhost:50051", options)
@@ -66,5 +92,6 @@ func main() {
 	ctx := context.Background()
 	clientApp := NewClientApp(clientConn)
 	// clientApp.doRequestResponse(ctx)
-	clientApp.doServerStream(ctx)
+	// clientApp.doServerStream(ctx)
+	clientApp.doClientStream(ctx)
 }

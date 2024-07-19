@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"net"
 
@@ -47,6 +48,39 @@ func (asi *AppServiceImpl) GeneratePrimes(req *proto.PrimeRequest, serverStream 
 	}
 	fmt.Println("[AppService - GeneratePrimes] Done!")
 	return nil // io.EOF will be returned
+}
+
+func (asi *AppServiceImpl) Aggregate(serverStream proto.AppService_AggregateServer) error {
+	var sum, min, max int64 = 0, 9223372036854775807, -9223372036854775808
+LOOP:
+	for {
+		req, err := serverStream.Recv()
+		if err == io.EOF {
+			log.Println("[AppService - Aggregate] All the data have been received")
+			res := &proto.AggregateResponse{
+				Sum: sum,
+				Min: min,
+				Max: max,
+			}
+			if err := serverStream.SendAndClose(res); err != io.EOF && err != nil {
+				log.Fatalln(err)
+			}
+			break LOOP
+		}
+		if err != nil {
+			log.Fatalln(err)
+		}
+		fmt.Println(req)
+		no := req.GetNo()
+		sum += no
+		if no < min {
+			min = no
+		}
+		if no > max {
+			max = no
+		}
+	}
+	return nil
 }
 
 func isPrime(no int64) bool {
