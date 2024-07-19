@@ -1,3 +1,11 @@
+/*
+CURL
+curl http://localhost:8080/
+curl http://localhost:8080/products
+curl http://localhost:8080/products -X POST -H "Content-Type: application/json" -d '{"id" : 104, "name" : "scribble pad", "cost" : 20}'
+curl http://localhost:8080/customers
+curl http://localhost:8080/users
+*/
 package main
 
 import (
