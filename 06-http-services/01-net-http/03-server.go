@@ -28,12 +28,22 @@ var products []Product = []Product{
 	{Id: 103, Name: "Marker", Cost: 50},
 }
 
+type Middleware func(http.HandlerFunc) http.HandlerFunc
+
 type AppServer struct {
-	routes map[string]http.HandlerFunc
+	routes      map[string]http.HandlerFunc
+	middlewares []Middleware
 }
 
 func (as *AppServer) AddRoute(url string, handler http.HandlerFunc) {
+	for _, middleware := range as.middlewares {
+		handler = middleware(handler)
+	}
 	as.routes[url] = handler
+}
+
+func (as *AppServer) AddMiddleware(middleware Middleware) {
+	as.middlewares = append(as.middlewares, middleware)
 }
 
 // http.Handler interface implementation
@@ -81,6 +91,7 @@ func CustomersHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "All the customers data will be served /")
 }
 
+// custom middlewares
 func logMiddleware(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Println(r.Method, r.URL.Path)
@@ -90,8 +101,9 @@ func logMiddleware(handler http.HandlerFunc) http.HandlerFunc {
 
 func main() {
 	appServer := NewAppServer()
-	appServer.AddRoute("/", logMiddleware(IndexHandler))
-	appServer.AddRoute("/products", logMiddleware(ProductsHandler))
-	appServer.AddRoute("/customers", logMiddleware(CustomersHandler))
+	appServer.AddMiddleware(logMiddleware)
+	appServer.AddRoute("/", IndexHandler)
+	appServer.AddRoute("/products", ProductsHandler)
+	appServer.AddRoute("/customers", CustomersHandler)
 	http.ListenAndServe(":8080", appServer)
 }
