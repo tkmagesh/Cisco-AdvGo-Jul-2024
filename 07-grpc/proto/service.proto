@@ -1,0 +1,24 @@
+syntax="proto3";
+
+package proto;
+
+option go_package = "/proto";
+
+// Data Contract
+message AddRequest{
+    int64 x = 1;
+    int64 y = 2;
+}
+
+message AddResponse{
+    int64 sum = 1;
+}
+
+// Service Contract
+service AppService {
+    // Operation Contracts
+
+    // Request & Response
+    rpc Add (AddRequest) returns (AddResponse);
+}
+
